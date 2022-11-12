@@ -1,8 +1,28 @@
-import React from 'react'
+import React,{useEffect,useState} from 'react'
+import {getData} from '../../utils/firebase'
+import CardComponent from '../../Components/Card/Card'
 
 const Home = () => {
+    const [state,setState]=useState([])
+    useEffect(()=>{
+        const fetchData = async()=>{
+            const rsp=await getData();
+            setState(rsp)
+        }
+        fetchData();
+    },[])
   return (
-    <div>Home</div>
+    <div>
+        {
+            state && state.map(user=>
+                (<>
+                    {<CardComponent key={user.id} user={user}/>}
+                    
+                </>)
+                
+            )
+        }
+    </div>
   )
 }
 

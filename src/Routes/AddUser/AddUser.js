@@ -1,13 +1,14 @@
 import React,{useState,useEffect} from 'react'
 import styled from 'styled-components';
-import { UploadFile } from '../../utils/firebase';
+import { UploadFile,createUser } from '../../utils/firebase';
+import {useNavigate} from 'react-router-dom'
 
 const INITIAL_STATE={
     name:'',
     email:'',
     info:'',
     contact:'',
-    file:''
+    imageUrl:''
 }
 
 const AddUser = () => {
@@ -15,31 +16,49 @@ const AddUser = () => {
     const {name,email,info,contact} = data;
     const [submit,setSubmit] = useState(false)
     const [progress,setProgress] = useState(null)
-    const [file,setFile] = useState('')
-
+    const [file,setFile] = useState(null)
+    const navigate = useNavigate()
     useEffect(()=>{
-        const upload =async()=>UploadFile(file);
-        upload();
+        const upload =async()=>{
+            console.log('a')
+            console.log(file)
+            if(!file) return
+            console.log('b')
+            await UploadFile(file,setData,setProgress)
+            console.log(data)
+        };
+        return upload;
     },[file])
 
     const handleChange=(e)=>{
         const {name,value} = e.target;
         setData({...data,[name]:value})
     }
+    const handleSubmit=async(e)=>{
+        e.preventDefault();
+        const id= new Date().getTime()
+        await createUser({...data,id})
+        setData(INITIAL_STATE)
+        setFile(INITIAL_STATE)
+        navigate('/')        
+        
+    }
   return (
     <div>
         <h2>Add user</h2>
-        <Form>
+        <Form onSubmit={(e)=>handleSubmit(e)}>
             <Input
                 name='name'
                 type='text'
                 value={name}
+                required
                 placeholder='Enter the name'
                 onChange={(e)=>handleChange(e)}
             />
             <Input
                 name='email'
                 type='email'
+                required
                 value={email}
                 placeholder='Enter the email'
                 onChange={(e)=>handleChange(e)}
@@ -47,6 +66,7 @@ const AddUser = () => {
             <Input
                 name='contact'
                 type='number'
+                required
                 value={contact}
                 placeholder='Enter the contact number'
                 onChange={(e)=>handleChange(e)}
@@ -54,6 +74,7 @@ const AddUser = () => {
             <Input
                 name='info'
                 type='text'
+                
                 value={info}
                 placeholder='Enter the info..'
                 onChange={(e)=>handleChange(e)}
@@ -65,6 +86,7 @@ const AddUser = () => {
                 placeholder='Enter the info..'
                 onChange={(e)=>setFile(e.target.files[0])}
             />
+            <button type='submit' disabled={progress===null || progress<100}>submit</button>
         </Form>
     </div>
   )
