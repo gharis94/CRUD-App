@@ -1,6 +1,6 @@
 import {initializeApp} from "firebase/app";
-import {getFirestore,collection,addDoc,getDocs} from 'firebase/firestore';
-import {getDownloadURL, getStorage, ref, uploadBytesResumable} from 'firebase/storage';
+import {getFirestore,collection,addDoc,getDocs,deleteDoc,doc, getDoc} from 'firebase/firestore';
+import {getDownloadURL, getStorage, ref, uploadBytesResumable,deleteObject} from 'firebase/storage';
 
 
 const firebaseConfig = {
@@ -26,7 +26,7 @@ export const UploadFile = async(file,setFn,progressFn)=>{
     const unsubcribe=uploadTask.on('state_changed',(snapshot)=>{
         const progress = (snapshot.bytesTransferred/snapshot.totalBytes)*100;
         console.log(`Upload Progress ${progress}%`)
-        progressFn(progress)
+        
         switch(snapshot.state){
             case 'paused':
                 console.log('paused')
@@ -45,8 +45,9 @@ export const UploadFile = async(file,setFn,progressFn)=>{
         const rsp =await getDownloadURL(uploadTask.snapshot.ref);
         console.log(rsp)
         setFn((prev)=>({...prev,imageUrl:rsp})) 
-        unsubcribe()
-        return
+        
+        progressFn(100)
+        return unsubcribe
     })
     
 }
@@ -55,7 +56,8 @@ export const UploadFile = async(file,setFn,progressFn)=>{
 
 export const createUser = async(data)=>{
     const collectionRef = collection(db,'users');
-
+    //const docRef =await getDoc(collectionRef)
+    //console.log(docRef.id)
     try{
         const docRef =await addDoc(collectionRef,data)
         console.log('completed:',docRef)
@@ -71,10 +73,33 @@ export const getData = async()=>{
     const collectionRef = collection(db,'users')
     const querySnapShot = await getDocs(collectionRef);
     const dataArr=querySnapShot.docs.reduce((acc,doc)=>{
-        acc=[...acc,doc.data()]
+        acc=[...acc,{...doc.data(),id:doc.id}]
         return acc;
     },[])
     console.log(dataArr)
     return dataArr
 
+}
+
+//delete data 
+
+export const deleteData =async (id)=>{
+    try{
+        await deleteDoc(doc(db, 'users', id))
+        console.log('deleted')
+        return
+    }catch(error){
+        console.log(error)
+    }
+    
+    
+    //const getDoc = await deleteDoc(doc(db, 'users',path));
+    //const colRef = collection(db,'users')
+    //const storageRef = ref(storage,`images/${path.imageName}`)
+
+    //console.log(path)
+    //console.log(colRef)
+    //console.log(getDoc)
+    //await deleteDoc(getDoc)
+     
 }

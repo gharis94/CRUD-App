@@ -14,13 +14,9 @@ const Home = () => {
   return (
     <div>
         {
-            state && state.map(user=>
-                (<>
-                    {<CardComponent key={user.id} user={user}/>}
-                    
-                </>)
-                
-            )
+            state && state.map((user)=>(
+                    <CardComponent key={user.id} user={user}/>
+                ))
         }
     </div>
   )

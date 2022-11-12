@@ -8,7 +8,8 @@ const INITIAL_STATE={
     email:'',
     info:'',
     contact:'',
-    imageUrl:''
+    imageUrl:'',
+    imageName:''
 }
 
 const AddUser = () => {
@@ -36,12 +37,15 @@ const AddUser = () => {
     }
     const handleSubmit=async(e)=>{
         e.preventDefault();
-        const id= new Date().getTime()
-        await createUser({...data,id})
+        //const id= new Date().getTime()
+        await createUser(data)
         setData(INITIAL_STATE)
-        setFile(INITIAL_STATE)
+        setFile('')
         navigate('/')        
-        
+    }
+    const handleImage=(e)=>{
+        setFile(e.target.files[0])
+        setData((prev)=>({...prev,imageName: e.target.files[0].name}))
     }
   return (
     <div>
@@ -80,11 +84,12 @@ const AddUser = () => {
                 onChange={(e)=>handleChange(e)}
             />
             <Input
-                name='file'
+                name='imageName'
                 type='file'
                 value={info}
                 placeholder='Enter the info..'
-                onChange={(e)=>setFile(e.target.files[0])}
+                onChange={(e)=>handleImage(e)}
+                
             />
             <button type='submit' disabled={progress===null || progress<100}>submit</button>
         </Form>
