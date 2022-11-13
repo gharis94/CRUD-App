@@ -1,20 +1,15 @@
-import React,{useEffect,useState} from 'react'
-import {getData} from '../../utils/firebase'
+import React,{useContext} from 'react'
 import CardComponent from '../../Components/Card/Card'
+import {GlobalContext} from '../../context/GlobatContext'
 
 const Home = () => {
-    const [state,setState]=useState([])
-    useEffect(()=>{
-        const fetchData = async()=>{
-            const rsp=await getData();
-            setState(rsp)
-        }
-        fetchData();
-    },[])
-  return (
+    const {users} = useContext(GlobalContext)
+    console.log(users)
+    const x=[]
+    return (
     <div>
         {
-            state && state.map((user)=>(
+            users.length && users.map((user)=>(
                     <CardComponent key={user.id} user={user}/>
                 ))
         }

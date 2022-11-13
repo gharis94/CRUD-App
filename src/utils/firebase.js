@@ -83,23 +83,16 @@ export const getData = async()=>{
 
 //delete data 
 
-export const deleteData =async (id)=>{
+export const deleteData =async (id,path)=>{
     try{
         await deleteDoc(doc(db, 'users', id))
         console.log('deleted')
+        await deleteObject(ref(storage,`user_images/${path}`))
+        console.log('image deleted')
+
         return
     }catch(error){
         console.log(error)
     }
     
-    
-    //const getDoc = await deleteDoc(doc(db, 'users',path));
-    //const colRef = collection(db,'users')
-    //const storageRef = ref(storage,`images/${path.imageName}`)
-
-    //console.log(path)
-    //console.log(colRef)
-    //console.log(getDoc)
-    //await deleteDoc(getDoc)
-     
 }
