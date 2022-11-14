@@ -21,7 +21,7 @@ export default function CardComponent({user}) {
       }
     }
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card sx={{ maxWidth: 345,margin:'10px' }}>
       <CardActionArea>
         <CardMedia
           component="img"
