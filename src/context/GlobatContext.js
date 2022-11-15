@@ -1,5 +1,6 @@
 import React,{createContext,useEffect,useState} from 'react';
-import {getData} from '../utils/firebase'
+import {getData,updateData} from '../utils/firebase'
+
 
 const INITIAL_STATE={
     users:[]
@@ -17,19 +18,27 @@ export const GlobalProvider = ({children}) =>{
         const fetchData =async()=>{
             const rsp=await getData();
             setUsers(rsp)
-            console.log(rsp)
         }
         fetchData()
     },[])
 
     const updateEdit=(id)=>{
         setIsEdit(prev=>(!prev))
-        if(users.lenght>0){
-            setCurrentUser()
+        console.log(users.length)
+        if(users.length > 0){
+            let cur = users.find(u=>u.id ===id)
+            console.log(cur)
+            setCurrentUser(cur)
         }        
     }
+    const updateState=async(data)=>{
+        (async () => {
+            await updateData(data)
+            updateEdit()
+        })()
+    }
     return(
-        <GlobalContext.Provider value={{users,setUsers,isEdit,updateEdit}}>
+        <GlobalContext.Provider value={{users,setUsers,isEdit,updateEdit,currentUser,updateState}}>
             {children}
         </GlobalContext.Provider>
     )

@@ -12,6 +12,9 @@ import Typography from '@mui/material/Typography';
 import { GlobalContext } from '../../context/GlobatContext';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField'
+import {updateData} from '../../utils/firebase'
+import { async } from '@firebase/util';
+import { FormControl, Input } from '@mui/material';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -52,10 +55,22 @@ BootstrapDialogTitle.propTypes = {
 };
 
 export default function CustomizedDialogs() {
-  const {isEdit,updateEdit} = React.useContext(GlobalContext)
-
+  const {isEdit,updateEdit,currentUser,updateState} = React.useContext(GlobalContext)
+  const [state,setState] = React.useState(currentUser)
   
+  const handleChange=(e)=>{
 
+    const {name,value} = e.target;
+    setState(prev=>({...prev,[name]:value}))
+  }
+  const handleSubmit=(e)=>{
+    e.preventDefault();
+    updateState(state)
+    // (async()=>{
+    //   await updateData(state)
+    //   updateEdit()
+    // })()
+  }
   return (
     <div>
       {/* <Button variant="outlined" onClick={updateEdit}>
@@ -76,42 +91,52 @@ export default function CustomizedDialogs() {
               sx={{'& .MuiTextField-root': { m: 1, width: '25ch' },}}
               noValidate
               autoComplete="off"
+              onSubmit={(e)=>handleSubmit(e)}
             >
-              <div>
+              <FormControl>
                 <TextField
-                  required
+                  
                   id="outlined-required"
                   label="Name"
-                  defaultValue="Hello World"
+                  type='text'
+                  name='name'
+                  onChange={(e)=>handleChange(e)}
+                  value={state.name}
                 />
                 <TextField
                   required
                   id="outlined-required"
                   label="Email"
-                  defaultValue="Hello World"
+                  name='email'
+                  onChange={(e)=>handleChange(e)}
+                  value={state.email}
                 />
                 <TextField
                   required
                   id="outlined-required"
                   label="Contact"
-                  defaultValue="Hello World"
+                  name='contact'
+                  onChange={(e)=>handleChange(e)}
+                  value={state.contact}
                 />
                 <TextField
                   required
                   id="outlined-required"
                   label="Info"
-                  defaultValue="Hello World"
+                  name='info'
+                  onChange={(e)=>handleChange(e)}
+                  value={state.info}
                 />
-              </div>
-
+              </FormControl>
+              <DialogActions>
+                <Button autoFocus type='submit'>
+                  Save changes
+                </Button>
+              </DialogActions>
             </Box>
           
         </DialogContent>
-        <DialogActions>
-          <Button autoFocus onClick={updateEdit}>
-            Save changes
-          </Button>
-        </DialogActions>
+        
       </BootstrapDialog>
     </div>
   );

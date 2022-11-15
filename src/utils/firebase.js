@@ -1,5 +1,5 @@
 import {initializeApp} from "firebase/app";
-import {getFirestore,collection,addDoc,getDocs,deleteDoc,doc, getDoc} from 'firebase/firestore';
+import {getFirestore,collection,addDoc,getDocs,deleteDoc,doc, getDoc,updateDoc} from 'firebase/firestore';
 import {getDownloadURL, getStorage, ref, uploadBytesResumable,deleteObject} from 'firebase/storage';
 
 
@@ -95,4 +95,18 @@ export const deleteData =async (id,path)=>{
         console.log(error)
     }
     
+}
+
+//updating data
+
+export const updateData =async(data)=>{
+    const docRef = doc(db,'users',data.id)
+
+    try{
+        await updateDoc(docRef,data)
+    }catch(error){
+        console.log(error)
+    }
+    
+       
 }
