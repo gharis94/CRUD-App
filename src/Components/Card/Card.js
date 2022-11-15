@@ -4,14 +4,14 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
-import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import {deleteData} from '../../utils/firebase'
 import { GlobalContext } from '../../context/GlobatContext';
 
 export default function CardComponent({user}) {
     const {name,imageUrl,info,contact,email,id,imageName} =user
-    const {users,setUsers} = React.useContext(GlobalContext)
+    const {users,setUsers,updateEdit} = React.useContext(GlobalContext)
+    
     
     const handleDel =async(id,imageName)=>{
       if(window.confirm("Are you sure?")){
@@ -44,7 +44,7 @@ export default function CardComponent({user}) {
             onClick = {() => handleDel(id,imageName)}>
               Delete
             </Typography>
-            <Typography color='primary'>Edit</Typography>
+            <Typography onClick={()=>updateEdit(id)} color='primary'>Edit</Typography>
           </Stack>
         </CardContent>
       </CardActionArea>

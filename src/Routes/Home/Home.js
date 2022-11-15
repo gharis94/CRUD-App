@@ -2,9 +2,9 @@ import React,{useContext} from 'react'
 import styled from 'styled-components'
 import CardComponent from '../../Components/Card/Card'
 import {GlobalContext} from '../../context/GlobatContext'
-
+import CustomizedDialogs from '../../Components/Dialog/Dialog'
 const Home = () => {
-    const {users} = useContext(GlobalContext)
+    const {users,isEdit} = useContext(GlobalContext)
     
     return (
     <Container>
@@ -13,6 +13,7 @@ const Home = () => {
                     <CardComponent key={user.id} user={user}/>
                 ))
         }
+        {isEdit? <CustomizedDialogs/>:null}
     </Container>
   )
 }
